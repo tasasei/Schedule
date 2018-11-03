@@ -17,6 +17,7 @@
 </form>
 
 <button type=button onclick="plot()">plot</button>
+<button type=button onclick="setsample()">CSVsample1</button>
 
 <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
 </body>
@@ -24,6 +25,10 @@
 <script>
   function myDate(h,m){
     return new Date(2011,5,10,h,m);
+  }
+
+  function setsample(){
+    document.getElementById("schedule").value = "time,todo\n7:00,wakkeup\n8:00,work\n18:00,dinner\n20:00,bath\n22:00,sleep";
   }
 
 function plot(){
