@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Pragma" content="no-cache">
+<meta charset="utf-8">
+<script type="text/javascript" src="./plotly-latest.min.js" charset="utf-8"></script>
+
+<title>board test</title>
+</head>
+
+<form id="param">
+    <textarea name="example" cols="50" rows="10" id="schedule">time,todo
+</textarea><br>
+</form>
+
+<button type=button onclick="plot()">plot</button>
+
+<div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+</body>
+
+<script>
+  function myDate(h,m){
+    return new Date(2011,5,10,h,m);
+  }
+
+function plot(){
+  let schedule_list = Plotly.d3.csv.parse(document.forms.param.schedule.value, function(d){
+    let time = d.time.split(":");
+    let hour = time[0];
+    let minute = time[1];
+    return {"time": myDate (hour,minute), "todo": d.todo};
+  });
+
+  for (var i=0; i < schedule_list.length; ++i){
+    let diff;
+    if(i < schedule_list.length - 1){
+      diff = schedule_list[i+1].time - schedule_list[i].time;
+    }
+    else{
+      diff = schedule_list[0].time - schedule_list[i].time + 1000*60*60*24;
+    }
+
+    if(diff > 1000*60*60*24){
+      diff = diff - 1000*60*60*24;
+    }
+    
+    schedule_list[i].long = diff;
+  }
+  
+  var data = [{
+    values: schedule_list.map(x => x.long),
+    labels: schedule_list.map(x => x.todo),
+    type: 'pie'
+  }];
+
+  var layout = {
+    height: 400,
+    width: 500
+  };
+
+  Plotly.plot('myDiv',data,layout);
+}
+</script>
+
+</html>
